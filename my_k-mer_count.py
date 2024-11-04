@@ -134,7 +134,7 @@ def read_fasta(file_path):
     return sequences
 
 if __name__ == '__main__':
-    num_cutline = 10
+    num_cutline = 100
 
     if len(sys.argv) != 3:
         print("입력 변수 개수 이상")
