@@ -8,8 +8,6 @@ count = {}
 for i in range(0, 4**k):
     count[i] = 0
 
-sequence = 'ATAATGACAGTATCAAAGCGCATCTTTCTGCTCCTTCTCCAGACCACACAATCCCTGATAAACCCAGCGGGTAAATTCGCTTTCGCGCAGTGCATCTCCCCAGGCGATGGGTTGCACGCCTTTCCAGCGTTCGTTAAGGAAGGTGGAAAGTTGCTCGATA'
-
 
 def decode(code):
     result = []
@@ -30,46 +28,48 @@ def decode(code):
 
     return ''.join(result[::-1]) # result를 거꾸로 출력해야 함
 
-# cur_sequence = 0b0 << (3 * k)
 
-# cur_sequence 초기화
-init_count = 0
-i=0
-cur_sequence = 0b0
-while (init_count < k-1):
-    cur_gene = sequence[i]
-    if cur_gene == 'A':
-        cur_gene = 0b11
-    elif cur_gene == 'C':
-        cur_gene = 0b10
-    elif cur_gene == 'G':
-        cur_gene = 0b01
-    elif cur_gene == 'T':
-        cur_gene = 0b00
-    else:
-        i+=1
-        continue
-    cur_sequence = (cur_sequence << 2) | cur_gene
-    i += 1
-    init_count += 1
-# print(bin(cur_sequence))
+def kmer_count(sequence):
+    # cur_sequence 초기화
+    init_count = 0
+    i=0
+    cur_sequence = 0b0
+    while (init_count < k-1):
+        cur_gene = sequence[i]
+        if cur_gene == 'A':
+            cur_gene = 0b11
+        elif cur_gene == 'C':
+            cur_gene = 0b10
+        elif cur_gene == 'G':
+            cur_gene = 0b01
+        elif cur_gene == 'T':
+            cur_gene = 0b00
+        else:
+            i+=1
+            continue
+        cur_sequence = (cur_sequence << 2) | cur_gene
+        i += 1
+        init_count += 1
+    # print(bin(cur_sequence))
+
+    # count 시작
+    for idx in range(i, len(sequence)):
+        cur_gene = sequence[idx]
+        if cur_gene == 'A':
+            cur_gene = 0b11
+        elif cur_gene == 'C':
+            cur_gene = 0b10
+        elif cur_gene == 'G':
+            cur_gene = 0b01
+        elif cur_gene == 'T':
+            cur_gene = 0b00
+        else: continue
+        
+        cur_sequence = ((cur_sequence << 2) | cur_gene) & bit_mask
+        # print(decode(cur_sequence))
+        count[cur_sequence] += 1 # count는 전역변수 -> sequence별 총합되게끔
 
 
-for idx in range(i, len(sequence)):
-    cur_gene = sequence[idx]
-    if cur_gene == 'A':
-        cur_gene = 0b11
-    elif cur_gene == 'C':
-        cur_gene = 0b10
-    elif cur_gene == 'G':
-        cur_gene = 0b01
-    elif cur_gene == 'T':
-        cur_gene = 0b00
-    else: continue
-    
-    cur_sequence = ((cur_sequence << 2) | cur_gene) & bit_mask
-    # print(decode(cur_sequence))
-    count[cur_sequence] += 1
 
 # print(count)
 # print('---result---')
@@ -104,9 +104,7 @@ def sort_mers(count, num_cutline):
 
     return result
 
-sorted_count = sort_mers(count, num_cutline)
-for num, code in sorted_count:
-    print(f'{decode(code)},{num}')
+
 
 """
 sorted_count = sorted(count.items(), key=lambda x: (x[1], x[0]), reverse=True)
@@ -136,9 +134,19 @@ def read_fasta(file_path):
                 continue
             else:
                 sequence_buffer.append(line)
-
+        
+        if sequence_buffer:
+            sequences.append(''.join(sequence_buffer))
+        
     return sequences
 
 if __name__ == '__main__':
-    sequences = read_fasta('Pathogenic_Escherichia coli O104H4.fna')
-    print(sequences[0:1])
+    sequences = read_fasta('./Pathogenic_Escherichia coli O104H4.fna')
+
+    for sequence in sequences:
+        kmer_count(sequence)
+    
+    sorted_count = sort_mers(count, num_cutline)
+
+    for num, code in sorted_count:
+        print(f'{decode(code)},{num}')
