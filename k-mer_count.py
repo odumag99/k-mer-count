@@ -78,6 +78,13 @@ def write_output(kmer_counts, k, student_id):
     print(f"Output written to {output_file}")
 
 def main():
+
+    k = 3
+    sequence = 'ATGAACGCAGAGAAT'
+
+
+
+    """
     # Command-line arguments
     if len(sys.argv) != 3:
         print("입력 변수 개수 이상")
@@ -88,12 +95,16 @@ def main():
     
     # Step 1: Read the DNA sequence from the fasta file
     sequence = read_fasta(input_file)
+    """
     
     # Step 2: Count all k-mers of length k using binary encoding
     kmer_counts = count_kmers(sequence, k)
-    
+    print(kmer_counts)
+
+    """
     # Step 3: Write the top 100 k-mers and any additional k-mers with the same count in the specified format
     write_output(kmer_counts, k, student_id)
+    """
 
 if __name__ == "__main__":
     main()
