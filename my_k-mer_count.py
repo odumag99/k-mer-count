@@ -1,12 +1,6 @@
+import sys
 import heapq
 from collections import deque
-
-k=4
-bit_mask = (0b1 << (2 * k)) - 1
-count = {}
-# count 초기화
-for i in range(0, 4**k):
-    count[i] = 0
 
 
 def decode(code):
@@ -73,7 +67,6 @@ def kmer_count(sequence):
 
 # print(count)
 # print('---result---')
-num_cutline = 10
 
 # sort 과정에서 효율성 개선해 볼 여지 있긴 할 듯.
 
@@ -141,7 +134,24 @@ def read_fasta(file_path):
     return sequences
 
 if __name__ == '__main__':
-    sequences = read_fasta('./Pathogenic_Escherichia coli O104H4.fna')
+    num_cutline = 10
+
+    if len(sys.argv) != 3:
+        print("입력 변수 개수 이상")
+        sys.exit(1)
+
+    k = int(sys.argv[1])
+    input_file = sys.argv[2]
+
+    bit_mask = (0b1 << (2 * k)) - 1
+    
+    
+    # count 초기화
+    count = {}
+    for i in range(0, 4**k):
+        count[i] = 0
+    
+    sequences = read_fasta(input_file)
 
     for sequence in sequences:
         kmer_count(sequence)
