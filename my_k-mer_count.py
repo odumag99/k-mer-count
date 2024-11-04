@@ -145,7 +145,6 @@ if __name__ == '__main__':
 
     bit_mask = (0b1 << (2 * k)) - 1
     
-    
     # count 초기화
     count = {}
     for i in range(0, 4**k):
@@ -158,5 +157,8 @@ if __name__ == '__main__':
     
     sorted_count = sort_mers(count, num_cutline)
 
-    for num, code in sorted_count:
-        print(f'{decode(code)},{num}')
+    with open('201815042.txt', 'w') as f:
+        f.write(f'{decode(sorted_count[0][1])},{sorted_count[0][0]}')
+        if len(sorted_count) > 1:
+            for num, code in sorted_count[1:]:
+                f.write(f'\n{decode(code)},{num}')

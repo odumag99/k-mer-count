@@ -9,4 +9,4 @@ fi
 K=$1               # k-mer의 길이
 INPUT_FILE=$2   
 
-python3 my_k-mer_count.py "$K" "$INPUT_FILE" >./201815042.txt
+python3 my_k-mer_count.py "$K" "$INPUT_FILE"
